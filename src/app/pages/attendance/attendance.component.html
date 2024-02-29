@@ -1,1 +1,22 @@
-<p>attendance works!</p>
+<nz-table #basicTable [nzData]="attendances">
+  <thead>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Department</th>
+      <th>Date</th>
+      <th>Is Present</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (attendance of attendances; track attendance.id) {
+    <tr>
+      <td>{{attendance.employee.firstName}}</td>
+      <td>{{attendance.employee.lastName}}</td>
+      <td>{{attendance.employee.department.name}}</td>
+      <td>{{attendance.date.date}}</td>
+      <td>{{attendance.present ? "True" : "False"}}</td>
+    </tr>
+    }
+  </tbody>
+</nz-table>
