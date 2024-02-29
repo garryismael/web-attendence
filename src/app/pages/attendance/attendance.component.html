@@ -1,7 +1,7 @@
 <div class="header">
   <div></div>
   <div>
-    <input type="file" hidden (change)="handleChange($event)" #uploader/>
+    <input type="file" hidden (change)="handleChange($event)" #uploader accept='.xlsx'/>
     <button type="button" class="btn" (click)="uploader.click()">
       Upload File
     </button>

@@ -6,6 +6,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzUploadChangeParam, NzUploadModule } from 'ng-zorro-antd/upload';
 import { attendances } from '../../constants';
 import { ReactiveFormsModule } from '@angular/forms';
+import { readExcel } from '../../utils';
 @Component({
   selector: 'app-attendance',
   standalone: true,
@@ -27,6 +28,8 @@ export class AttendanceComponent {
 
   handleChange(event: any): void {
     const file: File = event.target.files[0];
+
+    readExcel(event.target.files);
 
     if (file) {
       this.file = file;
