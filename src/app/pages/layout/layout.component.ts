@@ -1,12 +1,11 @@
+import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { SidebarComponent } from '../../components/sidebar/sidebar.component';
-import { TopbarComponent } from '../../components/topbar/topbar.component';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent, TopbarComponent],
+  imports: [RouterOutlet, NgOptimizedImage, RouterLink],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css',
 })
