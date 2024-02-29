@@ -1,9 +1,9 @@
 <div class="header">
   <div></div>
   <div>
-    <button nz-button nzType="primary">
-      <span nz-icon nzType="upload"></span>
-      Click to Upload
+    <input type="file" hidden (change)="handleChange($event)" #uploader/>
+    <button type="button" class="btn" (click)="uploader.click()">
+      Upload File
     </button>
   </div>
 </div>
