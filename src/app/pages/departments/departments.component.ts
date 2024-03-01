@@ -1,19 +1,37 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, afterNextRender, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { NgbHighlight, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { Observable } from 'rxjs';
 import { Department } from '../../models';
 import { DepartmentService } from './departments.service';
+import { NgbdSortableHeader, SortEvent } from './sortable.directive';
 
 @Component({
   selector: 'app-department',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    DecimalPipe,
+    FormsModule,
+    AsyncPipe,
+    NgbHighlight,
+    NgbdSortableHeader,
+    NgbPaginationModule,
+  ],
   templateUrl: './departments.component.html',
   styleUrl: './departments.component.css',
+  providers: [DepartmentService, DecimalPipe],
 })
 export class DepartmentsComponent implements OnInit {
   departments: Department[] = [];
-  private readonly departmentService: DepartmentService = inject(DepartmentService);
+  departments$: Observable<Department[]>;
+  total$: Observable<number>;
+  @ViewChildren(NgbdSortableHeader) headers?: QueryList<NgbdSortableHeader>;
+
+  constructor(public readonly departmentService: DepartmentService) {
+    this.departments$ = departmentService.departments$;
+    this.total$ = departmentService.total$;
+  }
 
   ngOnInit(): void {
     this.getDepartments();
@@ -23,5 +41,17 @@ export class DepartmentsComponent implements OnInit {
     this.departmentService.findAll().subscribe((departments) => {
       this.departments = departments;
     });
+  }
+
+  onSort({ column, direction }: SortEvent) {
+    // resetting other headers
+    this.headers?.forEach((header) => {
+      if (header.sortable !== column) {
+        header.direction = '';
+      }
+    });
+
+    this.departmentService.sortColumn = column;
+    this.departmentService.sortDirection = direction;
   }
 }

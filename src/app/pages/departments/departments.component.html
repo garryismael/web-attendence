@@ -1,16 +1,47 @@
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">NAME</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (department of departments; track department.id) {
-    <tr>
-      <td>{{department.id}}</td>
-      <td>{{department.name}}</td>
-    </tr>
+<form>
+  <div class="mb-3 row">
+    <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
+    <div class="col-xs-3 col-sm-auto">
+      <input id="table-complete-search" type="text" class="form-control" name="searchTerm"
+        [(ngModel)]="departmentService.searchTerm" />
+    </div>
+    @if (departmentService.loading$ | async) {
+    <span class="col col-form-label">Loading...</span>
     }
-  </tbody>
-</table>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col" sortable="name" (sort)="onSort($event)">NAME</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (department of departments$ | async ; track department.id) {
+      <tr>
+        <td>{{department.id}}</td>
+        <td>
+          <ngb-highlight [result]="department.name" [term]="departmentService.searchTerm">
+            {{department.name}}
+          </ngb-highlight>
+        </td>
+      </tr>
+      } @empty {
+      <tr>
+        <td colspan="2" style="text-align: center">No departments found</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-between p-2">
+    <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="departmentService.page"
+      [pageSize]="departmentService.pageSize">
+    </ngb-pagination>
+
+    <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="departmentService.pageSize">
+      <option [ngValue]="2">2 items per page</option>
+      <option [ngValue]="4">4 items per page</option>
+      <option [ngValue]="6">6 items per page</option>
+    </select>
+  </div>
+</form>
