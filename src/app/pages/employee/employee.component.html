@@ -1,30 +1,60 @@
 <form>
-  <div class="mb-3 row">
-    <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
-    <div class="col-xs-3 col-sm-auto">
-      <input id="table-complete-search" type="text" class="form-control" name="searchTerm"
-        [(ngModel)]="employeeService.searchTerm" />
+  <div class="mb-3 d-flex align-items-center justify-content-between">
+    <div class="row">
+      <label
+        for="table-complete-search"
+        class="col-xs-3 col-sm-auto col-form-label"
+        >Full text search:</label
+      >
+      <div class="col-xs-3 col-sm-auto">
+        <input
+          id="table-complete-search"
+          type="text"
+          class="form-control"
+          name="searchTerm"
+          [(ngModel)]="employeeService.searchTerm"
+        />
+      </div>
+      @if (employeeService.loading$ | async) {
+      <span class="col col-form-label">Loading...</span>
+      }
     </div>
-    @if (employeeService.loading$ | async) {
-    <span class="col col-form-label">Loading...</span>
-    }
+    <button class="btn btn-lg btn-primary" (click)="openAdd()">
+      Add Employee
+    </button>
   </div>
+
   <table class="table table-striped">
     <thead>
       <tr>
         <th scope="col">ID</th>
-        <th scope="col" sortable="firstName" (sort)="onSort($event)">FIRST NAME</th>
-        <th scope="col" sortable="lastName" (sort)="onSort($event)">LAST NAME</th>
-        <th scope="col" sortable="department" (sort)="onSort($event)">DEPARTMENT</th>
+        <th scope="col" sortable="firstName" (sort)="onSort($event)">
+          FIRST NAME
+        </th>
+        <th scope="col" sortable="lastName" (sort)="onSort($event)">
+          LAST NAME
+        </th>
+        <th scope="col" sortable="department" (sort)="onSort($event)">
+          DEPARTMENT
+        </th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
       @for (employee of employees$ | async; track employee.id) {
       <tr>
-        <td>{{employee.id}}</td>
-        <td>{{employee.firstName}}</td>
-        <td>{{employee.lastName}}</td>
-        <td>{{employee.department.name}}</td>
+        <td>{{ employee.id }}</td>
+        <td>{{ employee.firstName }}</td>
+        <td>{{ employee.lastName }}</td>
+        <td>{{ employee.department.name }}</td>
+        <td class="d-flex align-items-center gap-1">
+          <button class="btn btn-primary" (click)="openEdit(employee)">
+            edit
+          </button>
+          <button class="btn btn-danger" (click)="openDelete(employee)">
+            delete
+          </button>
+        </td>
       </tr>
       } @empty {
       <tr>
@@ -34,11 +64,19 @@
     </tbody>
   </table>
   <div class="d-flex justify-content-between p-2">
-    <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="employeeService.page"
-      [pageSize]="employeeService.pageSize">
+    <ngb-pagination
+      [collectionSize]="(total$ | async)!"
+      [(page)]="employeeService.page"
+      [pageSize]="employeeService.pageSize"
+    >
     </ngb-pagination>
 
-    <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="employeeService.pageSize">
+    <select
+      class="form-select"
+      style="width: auto"
+      name="pageSize"
+      [(ngModel)]="employeeService.pageSize"
+    >
       <option [ngValue]="2">2 items per page</option>
       <option [ngValue]="4">4 items per page</option>
       <option [ngValue]="6">6 items per page</option>

@@ -28,6 +28,7 @@
       <tr>
         <th scope="col">ID</th>
         <th scope="col" sortable="name" (sort)="onSort($event)">NAME</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -42,15 +43,13 @@
             {{ department.name }}
           </ngb-highlight>
         </td>
-        <td>
-          <div class="d-flex align-items-center gap-1">
-            <button class="btn btn-primary" (click)="openEdit(department)">
-              edit
-            </button>
-            <button class="btn btn-danger" (click)="openDelete(department)">
-              delete
-            </button>
-          </div>
+        <td class="d-flex align-items-center gap-1">
+          <button class="btn btn-primary" (click)="openEdit(department)">
+            edit
+          </button>
+          <button class="btn btn-danger" (click)="openDelete(department)">
+            delete
+          </button>
         </td>
       </tr>
       } @empty {

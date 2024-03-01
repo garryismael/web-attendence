@@ -1,7 +1,17 @@
 import { AsyncPipe, DecimalPipe } from '@angular/common';
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  QueryList,
+  ViewChildren,
+  inject,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgbHighlight, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbHighlight,
+  NgbModal,
+  NgbPaginationModule,
+} from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { Employee } from '../../models';
 import {
@@ -9,6 +19,9 @@ import {
   SortEventEmployee,
 } from './employee.directive';
 import { EmployeeService } from './employee.service';
+import { AddEmployeeComponent } from '../../components/employees/add-employee/add-employee.component';
+import { EditEmployeeComponent } from '../../components/employees/edit-employee/edit-employee.component';
+import { DeleteEmployeeComponent } from '../../components/employees/delete-employee/delete-employee.component';
 
 @Component({
   selector: 'app-employee',
@@ -29,9 +42,11 @@ export class EmployeeComponent implements OnInit {
   employees: Employee[] = [];
   employees$: Observable<Employee[]>;
   total$: Observable<number>;
-
   @ViewChildren(EmployeeSortableHeader)
   headers?: QueryList<EmployeeSortableHeader>;
+  private modalService = inject(NgbModal);
+  closeResult = '';
+
   constructor(public readonly employeeService: EmployeeService) {
     this.employees$ = employeeService.employees$;
     this.total$ = employeeService.total$;
@@ -57,5 +72,19 @@ export class EmployeeComponent implements OnInit {
 
     this.employeeService.sortColumn = column;
     this.employeeService.sortDirection = direction;
+  }
+
+  openAdd() {
+    const modalRef = this.modalService.open(AddEmployeeComponent);
+  }
+
+  openEdit(employee: Employee) {
+    const modalRef = this.modalService.open(EditEmployeeComponent);
+    modalRef.componentInstance.employee = employee;
+  }
+
+  openDelete(employee: Employee) {
+    const modalRef = this.modalService.open(DeleteEmployeeComponent);
+    modalRef.componentInstance.employee = employee;
   }
 }
