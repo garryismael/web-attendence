@@ -17,7 +17,7 @@ import { DepartmentRequest } from './dto';
 import { SortColumnDepartment, SortDirectionDepartment } from './sortable.directive';
 import { DecimalPipe } from '@angular/common';
 
-interface SearchResult {
+interface SearchResultDepartment {
   departments: Department[];
   total: number;
 }
@@ -144,7 +144,7 @@ export class DepartmentService {
       .pipe(catchError(handleError<Department>('createDepartment')));
   }
 
-  private _search(): Observable<SearchResult> {
+  private _search(): Observable<SearchResultDepartment> {
     const { sortColumn, sortDirection, pageSize, page, searchTerm } =
       this._state;
 
@@ -165,7 +165,7 @@ export class DepartmentService {
           (page - 1) * pageSize + pageSize
         );
 
-        const result: SearchResult = { departments, total };
+        const result: SearchResultDepartment = { departments, total };
         return of(result);
       })
     );

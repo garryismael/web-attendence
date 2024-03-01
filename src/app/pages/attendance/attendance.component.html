@@ -1,33 +1,74 @@
-<div class="header">
-  <div></div>
-  <div>
-    <input type="file" hidden (change)="handleChange($event)" #uploader accept='.xlsx' />
-    <button type="button" class="btn btn-primary" (click)="uploader.click()">
-      Upload File
-    </button>
+<form>
+  <div class="d-flex align-items-center justify-content-between">
+    <div class="row">
+      <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
+      <div class="col-xs-3 col-sm-auto">
+        <input id="table-complete-search" type="text" class="form-control" name="searchTerm"
+          [(ngModel)]="attendanceService.searchTerm" />
+      </div>
+      @if (attendanceService.loading$ | async) {
+      <span class="col col-form-label">Loading...</span>
+      }
+    </div>
+    <div class="header">
+      <div></div>
+      <div>
+        <input type="file" hidden (change)="handleChange($event)" #uploader accept='.xlsx' />
+        <button type="button" class="btn btn-primary" (click)="uploader.click()">
+          Upload File
+        </button>
+      </div>
+    </div>
   </div>
-</div>
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">First Name</th>
-      <th scope="col">Last Name</th>
-      <th scope="col">Department</th>
-      <th scope="col">Date</th>
-      <th scope="col">Is Present</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (attendance of attendances; track attendance.id) {
-    <tr>
-      <td>{{attendance.id}}</td>
-      <td>{{attendance.employee.firstName}}</td>
-      <td>{{attendance.employee.lastName}}</td>
-      <td>{{attendance.employee.department.name}}</td>
-      <td>{{attendance.date.date | date}}</td>
-      <td>{{attendance.present ? "True" : "False"}}</td>
-    </tr>
-    }
-  </tbody>
-</table>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col" sortable="employee" (sort)="onSort($event)">First Name</th>
+        <th scope="col" sortable="employee" (sort)="onSort($event)">Last Name</th>
+        <th scope="col" sortable="employee" (sort)="onSort($event)">Department</th>
+        <th scope="col" sortable="date" (sort)="onSort($event)">Date</th>
+        <th scope="col">Is Present</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (attendance of attendances$ | async; track attendance.id) {
+      <tr>
+        <td>{{attendance.id}}</td>
+        <td>
+          <ngb-highlight [result]="attendance.employee.firstName" [term]="attendanceService.searchTerm">
+            {{attendance.employee.firstName}}
+          </ngb-highlight>
+        </td>
+        <td>
+          <ngb-highlight [result]="attendance.employee.lastName" [term]="attendanceService.searchTerm">
+            {{attendance.employee.lastName}}
+          </ngb-highlight>
+        </td>
+        <td>
+          <ngb-highlight [result]="attendance.employee.department.name" [term]="attendanceService.searchTerm">
+            {{attendance.employee.department.name}}
+          </ngb-highlight>
+        </td>
+        <td>
+          <ngb-highlight [result]="attendance.date.date" [term]="attendanceService.searchTerm">
+            {{attendance.date.date | date}}
+          </ngb-highlight>
+        </td>
+        <td>{{attendance.present ? "True" : "False"}}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-between p-2">
+    <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="attendanceService.page"
+      [pageSize]="attendanceService.pageSize">
+    </ngb-pagination>
+
+    <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="attendanceService.pageSize">
+      <option [ngValue]="2">2 items per page</option>
+      <option [ngValue]="4">4 items per page</option>
+      <option [ngValue]="6">6 items per page</option>
+    </select>
+  </div>
+</form>
