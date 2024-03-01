@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, afterNextRender, inject } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzUploadChangeParam, NzUploadModule } from 'ng-zorro-antd/upload';
-import { attendances } from '../../constants';
-import { ReactiveFormsModule } from '@angular/forms';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { Attendance } from '../../models';
 import { readExcel } from '../../utils';
+import { AttendanceService } from './attendance.service';
 @Component({
   selector: 'app-attendance',
   standalone: true,
@@ -21,10 +21,22 @@ import { readExcel } from '../../utils';
   styleUrl: './attendance.component.css',
 })
 export class AttendanceComponent {
-  attendances = attendances;
+  attendances: Attendance[] = [];
   file: File | null = null;
 
-  constructor(private msg: NzMessageService) {}
+  private attendanceService = inject(AttendanceService);
+
+  constructor() {
+    afterNextRender(() => {
+      this.findAll();
+    });
+  }
+
+  findAll() {
+    this.attendanceService.findAll().subscribe((attendances) => {
+      attendances = attendances;
+    });
+  }
 
   handleChange(event: any): void {
     const file: File = event.target.files[0];

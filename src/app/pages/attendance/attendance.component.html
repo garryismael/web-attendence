@@ -1,7 +1,7 @@
 <div class="header">
   <div></div>
   <div>
-    <input type="file" hidden (change)="handleChange($event)" #uploader accept='.xlsx'/>
+    <input type="file" hidden (change)="handleChange($event)" #uploader accept='.xlsx' />
     <button type="button" class="btn" (click)="uploader.click()">
       Upload File
     </button>
@@ -18,7 +18,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (attendance of attendances; track attendance.id) {
+    @for (attendance of basicTable.data; track attendance.id) {
     <tr>
       <td>{{attendance.employee.firstName}}</td>
       <td>{{attendance.employee.lastName}}</td>
