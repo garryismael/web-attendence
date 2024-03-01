@@ -1,1 +1,16 @@
-<p>departments works!</p>
+<nz-table #basicTable [nzData]="departments">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (department of basicTable.data; track department.id) {
+    <tr>
+      <td>{{department.id}}</td>
+      <td>{{department.name}}</td>
+    </tr>
+    }
+  </tbody>
+  <nz-table>

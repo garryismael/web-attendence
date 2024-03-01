@@ -1,4 +1,8 @@
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import {
+  ApplicationConfig,
+  Provider,
+  importProvidersFrom,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -8,11 +12,19 @@ import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
 import {
+  HTTP_INTERCEPTORS,
   HttpClientModule,
   provideHttpClient,
   withFetch,
 } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { ApiInterceptor } from './utils/http';
+
+export const apiInterceptorProvider: Provider = {
+  provide: HTTP_INTERCEPTORS,
+  useClass: ApiInterceptor,
+  multi: true,
+};
 
 registerLocaleData(en);
 
@@ -25,5 +37,6 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(HttpClientModule),
     provideAnimations(),
     provideHttpClient(withFetch()),
+    apiInterceptorProvider,
   ],
 };

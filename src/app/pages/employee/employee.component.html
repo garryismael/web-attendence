@@ -1,1 +1,20 @@
-<p>employee works!</p>
+<nz-table #basicTable [nzData]="employees">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Department</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (employee of employees; track employee.id) {
+    <tr>
+      <td>{{employee.id}}</td>
+      <td>{{employee.firstName}}</td>
+      <td>{{employee.lastName}}</td>
+      <td>{{employee.department.name}}</td>
+    </tr>
+    }
+  </tbody>
+</nz-table>
