@@ -5,7 +5,7 @@ import { NgbHighlight, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { Department } from '../../models';
 import { DepartmentService } from './departments.service';
-import { NgbdSortableHeader, SortEvent } from './sortable.directive';
+import { DepartmentSortableHeader, SortEvent } from './sortable.directive';
 
 @Component({
   selector: 'app-department',
@@ -15,7 +15,7 @@ import { NgbdSortableHeader, SortEvent } from './sortable.directive';
     FormsModule,
     AsyncPipe,
     NgbHighlight,
-    NgbdSortableHeader,
+    DepartmentSortableHeader,
     NgbPaginationModule,
   ],
   templateUrl: './departments.component.html',
@@ -26,7 +26,7 @@ export class DepartmentsComponent implements OnInit {
   departments: Department[] = [];
   departments$: Observable<Department[]>;
   total$: Observable<number>;
-  @ViewChildren(NgbdSortableHeader) headers?: QueryList<NgbdSortableHeader>;
+  @ViewChildren(DepartmentSortableHeader) headers?: QueryList<DepartmentSortableHeader>;
 
   constructor(public readonly departmentService: DepartmentService) {
     this.departments$ = departmentService.departments$;
