@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, afterNextRender } from '@angular/core';
+import { Component, OnInit, afterNextRender, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Department } from '../../models';
-import { DepartmentsService } from './departments.service';
+import { DepartmentService } from './departments.service';
 
 @Component({
   selector: 'app-department',
@@ -11,13 +11,12 @@ import { DepartmentsService } from './departments.service';
   templateUrl: './departments.component.html',
   styleUrl: './departments.component.css',
 })
-export class DepartmentsComponent {
+export class DepartmentsComponent implements OnInit {
   departments: Department[] = [];
+  private readonly departmentService: DepartmentService = inject(DepartmentService);
 
-  constructor(private departmentService: DepartmentsService) {
-    afterNextRender(() => {
-      this.getDepartments();
-    });
+  ngOnInit(): void {
+    this.getDepartments();
   }
 
   getDepartments() {

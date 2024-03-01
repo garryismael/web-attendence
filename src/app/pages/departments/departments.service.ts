@@ -8,7 +8,7 @@ import { handleError } from '../../utils';
 @Injectable({
   providedIn: 'root',
 })
-export class DepartmentsService {
+export class DepartmentService {
   private userUrl: string = 'departments';
   private http: HttpClient = inject(HttpClient);
 
