@@ -1,20 +1,47 @@
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">FIRST NAME</th>
-      <th scope="col">LAST NAME</th>
-      <th scope="col">DEPARTMENT</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (employee of employees; track employee.id) {
-    <tr>
-      <td>{{employee.id}}</td>
-      <td>{{employee.firstName}}</td>
-      <td>{{employee.lastName}}</td>
-      <td>{{employee.department.name}}</td>
-    </tr>
+<form>
+  <div class="mb-3 row">
+    <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
+    <div class="col-xs-3 col-sm-auto">
+      <input id="table-complete-search" type="text" class="form-control" name="searchTerm"
+        [(ngModel)]="employeeService.searchTerm" />
+    </div>
+    @if (employeeService.loading$ | async) {
+    <span class="col col-form-label">Loading...</span>
     }
-  </tbody>
-</table>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col" sortable="firstName" (sort)="onSort($event)">FIRST NAME</th>
+        <th scope="col" sortable="lastName" (sort)="onSort($event)">LAST NAME</th>
+        <th scope="col" sortable="department" (sort)="onSort($event)">DEPARTMENT</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (employee of employees$ | async; track employee.id) {
+      <tr>
+        <td>{{employee.id}}</td>
+        <td>{{employee.firstName}}</td>
+        <td>{{employee.lastName}}</td>
+        <td>{{employee.department.name}}</td>
+      </tr>
+      } @empty {
+      <tr>
+        <td colspan="4" style="text-align: center">No employees found</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-between p-2">
+    <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="employeeService.page"
+      [pageSize]="employeeService.pageSize">
+    </ngb-pagination>
+
+    <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="employeeService.pageSize">
+      <option [ngValue]="2">2 items per page</option>
+      <option [ngValue]="4">4 items per page</option>
+      <option [ngValue]="6">6 items per page</option>
+    </select>
+  </div>
+</form>
