@@ -1,22 +1,12 @@
 import { Component, afterNextRender, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { Attendance } from '../../models';
 import { readExcel } from '../../utils';
 import { AttendanceService } from './attendance.service';
 @Component({
   selector: 'app-attendance',
   standalone: true,
-  imports: [
-    NzTableModule,
-    NzUploadModule,
-    NzButtonModule,
-    NzIconModule,
-    ReactiveFormsModule,
-  ],
+  imports: [ReactiveFormsModule],
   templateUrl: './attendance.component.html',
   styleUrl: './attendance.component.css',
 })
