@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add Department</h4>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  ></button>
+</div>
+<div class="model-body">
+  <form class="p-2">
+    <div class="mb-3">
+      <label for="name">Department Name</label>
+      <div class="input-group py-2">
+        <input
+          id="name"
+          class="form-control"
+          placeholder="department name"
+          name="name"
+        />
+      </div>
+      <button class="btn btn-primary bi bi-calendar3" type="button">
+        Save
+      </button>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-outline-dark"
+    (click)="activeModal.close('Close click')"
+  >
+    Close
+  </button>
+</div>

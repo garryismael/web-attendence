@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add Department</h4>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  ></button>
+</div>
+<div class="model-body">
+  <div class="p-2">
+    <p>Are you sure ?</p>
+    <button class="btn btn-danger">Delete</button>
+  </div>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-outline-dark"
+    (click)="activeModal.close('Close click')"
+  >
+    Close
+  </button>
+</div>

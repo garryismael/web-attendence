@@ -1,13 +1,27 @@
 <form>
-  <div class="mb-3 row">
-    <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
-    <div class="col-xs-3 col-sm-auto">
-      <input id="table-complete-search" type="text" class="form-control" name="searchTerm"
-        [(ngModel)]="departmentService.searchTerm" />
+  <div class="mb-3 d-flex align-items-center justify-content-between">
+    <div class="row">
+      <label
+        for="table-complete-search"
+        class="col-xs-3 col-sm-auto col-form-label"
+        >Full text search:</label
+      >
+      <div class="col-xs-3 col-sm-auto">
+        <input
+          id="table-complete-search"
+          type="text"
+          class="form-control"
+          name="searchTerm"
+          [(ngModel)]="departmentService.searchTerm"
+        />
+      </div>
+      @if (departmentService.loading$ | async) {
+      <span class="col col-form-label">Loading...</span>
+      }
     </div>
-    @if (departmentService.loading$ | async) {
-    <span class="col col-form-label">Loading...</span>
-    }
+    <button class="btn btn-lg btn-primary" (click)="openAdd()">
+      Add Department
+    </button>
   </div>
   <table class="table table-striped">
     <thead>
@@ -19,11 +33,24 @@
     <tbody>
       @for (department of departments$ | async ; track department.id) {
       <tr>
-        <td>{{department.id}}</td>
+        <td>{{ department.id }}</td>
         <td>
-          <ngb-highlight [result]="department.name" [term]="departmentService.searchTerm">
-            {{department.name}}
+          <ngb-highlight
+            [result]="department.name"
+            [term]="departmentService.searchTerm"
+          >
+            {{ department.name }}
           </ngb-highlight>
+        </td>
+        <td>
+          <div class="d-flex align-items-center gap-1">
+            <button class="btn btn-primary" (click)="openEdit(department)">
+              edit
+            </button>
+            <button class="btn btn-danger" (click)="openDelete(department)">
+              delete
+            </button>
+          </div>
         </td>
       </tr>
       } @empty {
@@ -34,11 +61,19 @@
     </tbody>
   </table>
   <div class="d-flex justify-content-between p-2">
-    <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="departmentService.page"
-      [pageSize]="departmentService.pageSize">
+    <ngb-pagination
+      [collectionSize]="(total$ | async)!"
+      [(page)]="departmentService.page"
+      [pageSize]="departmentService.pageSize"
+    >
     </ngb-pagination>
 
-    <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="departmentService.pageSize">
+    <select
+      class="form-select"
+      style="width: auto"
+      name="pageSize"
+      [(ngModel)]="departmentService.pageSize"
+    >
       <option [ngValue]="2">2 items per page</option>
       <option [ngValue]="4">4 items per page</option>
       <option [ngValue]="6">6 items per page</option>
