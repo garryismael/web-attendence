@@ -3,6 +3,7 @@ import { AttendanceComponent } from './pages/attendance/attendance.component';
 import { EmployeeComponent } from './pages/employee/employee.component';
 import { LayoutComponent } from './pages/layout/layout.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { DepartmentsComponent } from './pages/departments/departments.component';
 
 export const routes: Routes = [
   {
@@ -15,7 +16,11 @@ export const routes: Routes = [
     component: LayoutComponent,
     children: [
       {
-        path: 'employee',
+        path: 'departments',
+        component: DepartmentsComponent,
+      },
+      {
+        path: 'employees',
         component: EmployeeComponent,
       },
       {
