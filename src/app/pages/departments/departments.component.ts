@@ -5,7 +5,7 @@ import { NgbHighlight, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { Department } from '../../models';
 import { DepartmentService } from './departments.service';
-import { DepartmentSortableHeader, SortEvent } from './sortable.directive';
+import { DepartmentSortableHeader, SortEventDepartment } from './sortable.directive';
 
 @Component({
   selector: 'app-department',
@@ -43,7 +43,7 @@ export class DepartmentsComponent implements OnInit {
     });
   }
 
-  onSort({ column, direction }: SortEvent) {
+  onSort({ column, direction }: SortEventDepartment) {
     // resetting other headers
     this.headers?.forEach((header) => {
       if (header.sortable !== column) {

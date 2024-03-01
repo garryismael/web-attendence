@@ -14,7 +14,7 @@ import {
 import { Department } from '../../models';
 import { handleError } from '../../utils';
 import { DepartmentRequest } from './dto';
-import { SortColumn, SortDirection } from './sortable.directive';
+import { SortColumnDepartment, SortDirectionDepartment } from './sortable.directive';
 import { DecimalPipe } from '@angular/common';
 
 interface SearchResult {
@@ -26,8 +26,8 @@ interface State {
   page: number;
   pageSize: number;
   searchTerm: string;
-  sortColumn: SortColumn;
-  sortDirection: SortDirection;
+  sortColumn: SortColumnDepartment;
+  sortDirection: SortDirectionDepartment;
 }
 
 const compare = (v1: string | number, v2: string | number) =>
@@ -35,7 +35,7 @@ const compare = (v1: string | number, v2: string | number) =>
 
 function sort(
   departments: Department[],
-  column: SortColumn,
+  column: SortColumnDepartment,
   direction: string
 ): Department[] {
   if (direction === '' || column === '') {
@@ -55,7 +55,7 @@ function matches(department: Department, term: string, pipe: PipeTransform) {
   providedIn: 'root',
 })
 export class DepartmentService {
-  private userUrl: string = 'departments';
+  private departmentUrl: string = 'departments';
   private http: HttpClient = inject(HttpClient);
   private _loading$ = new BehaviorSubject<boolean>(true);
   private _search$ = new Subject<void>();
@@ -116,10 +116,10 @@ export class DepartmentService {
   set searchTerm(searchTerm: string) {
     this._set({ searchTerm });
   }
-  set sortColumn(sortColumn: SortColumn) {
+  set sortColumn(sortColumn: SortColumnDepartment) {
     this._set({ sortColumn });
   }
-  set sortDirection(sortDirection: SortDirection) {
+  set sortDirection(sortDirection: SortDirectionDepartment) {
     this._set({ sortDirection });
   }
 
@@ -129,18 +129,18 @@ export class DepartmentService {
   }
 
   findAll() {
-    return this.http.get<Department[]>(this.userUrl);
+    return this.http.get<Department[]>(this.departmentUrl);
   }
 
   findOne(id: number) {
     return this.http
-      .get(`${this.userUrl}/${id}`)
+      .get(`${this.departmentUrl}/${id}`)
       .pipe(catchError(handleError<Department>('GetDepartment')));
   }
 
   addDepartment(request: DepartmentRequest) {
     return this.http
-      .post<Department>(this.userUrl, request)
+      .post<Department>(this.departmentUrl, request)
       .pipe(catchError(handleError<Department>('createDepartment')));
   }
 

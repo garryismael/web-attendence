@@ -1,17 +1,17 @@
 import { Directive, EventEmitter, Input, Output } from '@angular/core';
 import { Department } from '../../models';
 
-export type SortColumn = keyof Department | '';
-export type SortDirection = 'asc' | 'desc' | '';
-const rotate: { [key: string]: SortDirection } = {
+export type SortColumnDepartment = keyof Department | '';
+export type SortDirectionDepartment = 'asc' | 'desc' | '';
+const rotate: { [key: string]: SortDirectionDepartment } = {
   asc: 'desc',
   desc: '',
   '': 'asc',
 };
 
-export interface SortEvent {
-  column: SortColumn;
-  direction: SortDirection;
+export interface SortEventDepartment {
+  column: SortColumnDepartment;
+  direction: SortDirectionDepartment;
 }
 
 @Directive({
@@ -24,9 +24,9 @@ export interface SortEvent {
   },
 })
 export class DepartmentSortableHeader {
-  @Input() sortable: SortColumn = '';
-  @Input() direction: SortDirection = '';
-  @Output() sort = new EventEmitter<SortEvent>();
+  @Input() sortable: SortColumnDepartment = '';
+  @Input() direction: SortDirectionDepartment = '';
+  @Output() sort = new EventEmitter<SortEventDepartment>();
 
   rotate() {
     this.direction = rotate[this.direction];
