@@ -2,15 +2,17 @@ import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbHighlight, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import moment from 'moment';
 import { Observable } from 'rxjs';
+import * as XLSX from 'xlsx';
 import { Attendance } from '../../models';
-import { readExcel } from '../../utils';
 import { DateFormat } from '../../utils/date';
 import {
   AttendanceSortableHeader,
   SortEventAttendance,
 } from './attendance.directive';
 import { AttendanceService } from './attendance.service';
+import { Sheet } from './sheet';
 @Component({
   selector: 'app-attendance',
   standalone: true,
@@ -34,6 +36,10 @@ export class AttendanceComponent implements OnInit {
   @ViewChildren(AttendanceSortableHeader)
   headers?: QueryList<AttendanceSortableHeader>;
   file: File | null = null;
+  data: Sheet = {
+    attendances: [],
+    employees: [],
+  };
 
   constructor(public attendanceService: AttendanceService) {
     this.attendances$ = attendanceService.attendances$;
@@ -50,18 +56,51 @@ export class AttendanceComponent implements OnInit {
     });
   }
 
-  handleChange(event: any): void {
+  async handleChange(event: any): Promise<void> {
     const file: File = event.target.files[0];
 
-    readExcel(event.target.files);
+    await this.readExcel(event.target.files);
 
     if (file) {
       this.file = file;
     }
   }
 
+  async readExcel(fileList: FileList) {
+    if (fileList && fileList?.length > 0) {
+      let file = fileList[0];
+      let reader = new FileReader();
+      let excelData: any = {};
+      reader.onload = (e: any) => {
+        let workbook = XLSX.read(e.target.result, {
+          type: 'array',
+          cellDates: true,
+        });
+        let sheetNames = Object.keys(workbook.Sheets);
+        for (const sheetName of sheetNames) {
+          const sheetData: any = XLSX.utils.sheet_to_json(
+            workbook.Sheets[sheetName]
+          );
+          for (const row of sheetData) {
+            for (const key in row) {
+              if (row[key] instanceof Date) {
+                row[key] = moment(row[key], 'MM/DD/YYYY h:mm A').format(
+                  'MM/DD/YYYY HH:mm'
+                );
+              }
+            }
+          }
+          excelData[sheetName] = sheetData;
+        }
+        this.cleanData(excelData);
+        console.log(this.data);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+    return [];
+  }
+
   onSort({ column, direction }: SortEventAttendance) {
-    // resetting other headers
     this.headers?.forEach((header) => {
       if (header.sortable !== column) {
         header.direction = '';
@@ -70,5 +109,35 @@ export class AttendanceComponent implements OnInit {
 
     this.attendanceService.sortColumn = column;
     this.attendanceService.sortDirection = direction;
+  }
+
+  cleanData(data: any) {
+    let sheet: Sheet = {
+      attendances: [],
+      employees: [],
+    };
+    for (const [key, value] of Object.entries(data)) {
+      if (key.toLowerCase() === 'attendance') {
+        const arrayValue = value as Array<any>;
+        for (const item of arrayValue) {
+          sheet.attendances.push({
+            employeeId: item.EmployeeId as number,
+            date: item.Date as string,
+            present: item.Present.toLowerCase() === 'yes' ? true : false,
+          });
+        }
+      } else if (key.toLowerCase() === 'employee') {
+        const arrayValue = value as Array<any>;
+        for (const item of arrayValue) {
+          sheet.employees.push({
+            id: item.ID,
+            department: item.Department,
+            firstName: item.Firstname,
+            lastName: item.Lastname,
+          });
+        }
+      }
+    }
+    this.data = sheet;
   }
 }
