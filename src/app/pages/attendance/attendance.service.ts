@@ -85,6 +85,10 @@ export class AttendanceService {
   };
 
   constructor() {
+    this.load();
+  }
+
+  load() {
     this._search$
       .pipe(
         tap(() => this._loading$.next(true)),
@@ -132,6 +136,7 @@ export class AttendanceService {
   get pageSize() {
     return this._state.pageSize;
   }
+
   get searchTerm() {
     return this._state.searchTerm;
   }
@@ -152,7 +157,7 @@ export class AttendanceService {
     this._set({ sortDirection });
   }
 
-  private _set(patch: Partial<State>) {
+  public _set(patch: Partial<State>) {
     Object.assign(this._state, patch);
     this._search$.next();
   }

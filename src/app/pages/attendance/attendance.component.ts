@@ -29,7 +29,7 @@ import { Sheet } from './sheet';
   templateUrl: './attendance.component.html',
   styleUrl: './attendance.component.css',
 })
-export class AttendanceComponent implements OnInit {
+export class AttendanceComponent {
   attendances: Attendance[] = [];
   attendances$: Observable<Attendance[]>;
   total$: Observable<number>;
@@ -44,16 +44,6 @@ export class AttendanceComponent implements OnInit {
   constructor(public attendanceService: AttendanceService) {
     this.attendances$ = attendanceService.attendances$;
     this.total$ = attendanceService.total$;
-  }
-
-  ngOnInit(): void {
-    this.findAll();
-  }
-
-  findAll() {
-    this.attendanceService.findAll().subscribe((attendances) => {
-      this.attendances = attendances;
-    });
   }
 
   async handleChange(event: any): Promise<void> {
@@ -142,8 +132,8 @@ export class AttendanceComponent implements OnInit {
   }
 
   bulkCreate() {
-    this.attendanceService.bulkCreate(this.data).subscribe((attendances) => {
-      this.attendances.concat(attendances);
+    this.attendanceService.bulkCreate(this.data).subscribe(() => {
+      this.attendanceService.searchTerm = '';
     });
   }
 }
