@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, PipeTransform, inject } from '@angular/core';
 import {
@@ -13,15 +14,12 @@ import {
 } from 'rxjs';
 import { Attendance, AttendanceDate, Employee } from '../../models';
 import { handleError } from '../../utils';
+import { SortDirectionEmployee } from '../employee/employee.directive';
 import {
   SortColumnAttendance,
   SortDirectionAttendance,
 } from './attendance.directive';
-import { DecimalPipe } from '@angular/common';
-import {
-  SortColumnEmployee,
-  SortDirectionEmployee,
-} from '../employee/employee.directive';
+import { Sheet } from './sheet';
 
 interface SearchResultAttendance {
   attendances: Attendance[];
@@ -71,7 +69,7 @@ function matches(attendance: Attendance, term: string, pipe: PipeTransform) {
   providedIn: 'root',
 })
 export class AttendanceService {
-  private userUrl: string = 'attendances';
+  private attendanceUrl: string = 'attendances';
   private http: HttpClient = inject(HttpClient);
   private _loading$ = new BehaviorSubject<boolean>(true);
   private _search$ = new Subject<void>();
@@ -101,6 +99,22 @@ export class AttendanceService {
       });
 
     this._search$.next();
+  }
+
+  findAll() {
+    return this.http.get<Attendance[]>(this.attendanceUrl);
+  }
+
+  findOne(id: number) {
+    return this.http
+      .get<Attendance>(`${this.attendanceUrl}/${id}`)
+      .pipe(catchError(handleError<Attendance>('GetAttendance')));
+  }
+
+  bulkCreate(sheet: Sheet) {
+    return this.http
+      .post<Attendance[]>(`${this.attendanceUrl}/bulk-create`, sheet)
+      .pipe(catchError(handleError<Attendance[]>('bulkCreate')));
   }
 
   get attendances$() {
@@ -168,15 +182,5 @@ export class AttendanceService {
         return of(result);
       })
     );
-  }
-
-  findAll() {
-    return this.http.get<Attendance[]>(this.userUrl);
-  }
-
-  findOne(id: number) {
-    return this.http
-      .get(`${this.userUrl}/${id}`)
-      .pipe(catchError(handleError<Attendance>('GetAttendance')));
   }
 }

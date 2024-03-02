@@ -93,7 +93,7 @@ export class AttendanceComponent implements OnInit {
           excelData[sheetName] = sheetData;
         }
         this.cleanData(excelData);
-        console.log(this.data);
+        this.bulkCreate();
       };
       reader.readAsArrayBuffer(file);
     }
@@ -139,5 +139,11 @@ export class AttendanceComponent implements OnInit {
       }
     }
     this.data = sheet;
+  }
+
+  bulkCreate() {
+    this.attendanceService.bulkCreate(this.data).subscribe((attendances) => {
+      this.attendances.concat(attendances);
+    });
   }
 }
